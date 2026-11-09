@@ -1,0 +1,14 @@
+import mongoose from 'mongoose';
+export const ROLES = ['admin', 'receptionist', 'staff', 'supervisor'];
+const userSchema = new mongoose.Schema({
+  name: { type: String, required: true, trim: true, maxlength: 100 },
+  email: { type: String, required: true, lowercase: true, trim: true, unique: true },
+  passwordHash: { type: String, required: true, select: false },
+  role: { type: String, enum: ROLES, required: true },
+  assignedSteps: { type: [Number], default: [], validate: { validator: a => a.every(n => Number.isInteger(n) && n >= 1) && new Set(a).size === a.length, message: 'Invalid step assignments' } },
+  active: { type: Boolean, default: true },
+  sessionVersion: { type: Number, default: 0 },
+  lastLoginAt: Date
+}, { timestamps: true });
+userSchema.set('toJSON', { transform: (_doc, ret) => { delete ret.passwordHash; delete ret.__v; return ret; } });
+export const User = mongoose.model('User', userSchema);

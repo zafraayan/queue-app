@@ -1,0 +1,6 @@
+import mongoose from 'mongoose';
+const stepSchema = new mongoose.Schema({ step:{type:Number,required:true,min:1}, status:{type:String,enum:['LOCKED','WAITING','CALLED','PROCESSING','COMPLETED'],required:true}, queuedAt:Date, calledAt:Date, startedAt:Date, completedAt:Date, assignedTo:{type:mongoose.Schema.Types.ObjectId,ref:'User',default:null}, counterLabel:{type:String,default:null}, recalls:{type:Number,default:0,min:0} },{_id:false});
+const schema = new mongoose.Schema({ day:{type:String,required:true,index:true}, queueNumber:{type:String,required:true}, clientName:{type:String,required:true,trim:true,maxlength:120}, purpose:{type:String,required:true,trim:true,maxlength:200}, remarks:{type:String,default:'',maxlength:1000}, priority:{type:Boolean,default:false}, registeredBy:{type:mongoose.Schema.Types.ObjectId,ref:'User',required:true}, currentStep:{type:Number,min:1,default:1}, status:{type:String,enum:['ACTIVE','COMPLETED'],default:'ACTIVE'}, steps:{type:[stepSchema],required:true}, completedAt:Date },{timestamps:true,optimisticConcurrency:true});
+schema.index({day:1,queueNumber:1},{unique:true});
+schema.index({'steps.status':1,currentStep:1});
+export const QueueTransaction=mongoose.model('QueueTransaction',schema);
