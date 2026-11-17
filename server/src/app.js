@@ -28,7 +28,7 @@ export function createApp() {
   });
   app.use(sessionMiddleware);
   app.set('sessionMiddleware', sessionMiddleware);
-  app.use('/api', rateLimit({ windowMs: 15 * 60 * 1000, limit: 300, standardHeaders: 'draft-8', legacyHeaders: false }));
+  app.use('/api', rateLimit({ windowMs: 15 * 60 * 1000, limit: 3000, standardHeaders: 'draft-8', legacyHeaders: false }));
   app.use('/api', requireSameOriginWrite);
   app.use('/api/health', health);
   app.use('/api/auth', auth);
